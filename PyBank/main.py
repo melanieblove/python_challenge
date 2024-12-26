@@ -29,16 +29,27 @@ with open(bank_csv) as csvfile:
     #print(f"CSV Header: {csv_header}")
 
     # Read each row of data after the header
-    for row in csvreader:
-        months.append(row[0])
-        budget_numbers.append(int(row[1]))
-        sum_total += int(row[1])
-    print(np.average(budget_numbers))
-    print(np.max(budget_numbers))
-    print(np.min(budget_numbers))
-    print("Total months:" + str(len(months)))
-    print(f"Total: ${sum_total}")    
+    for date, number in csvreader:
+        months.append(date)
+        budget_numbers.append(int(number))
     
+        sum_total += int(number)
+
+        
+    difference = np.diff(budget_numbers)
+    average= np.average(difference)
+    greatest_inc=np.max(difference)
+    greatest_decr=np.min(difference)
+
+    index_greatest_inc = list(difference).index(greatest_inc) + 1
+    index_greatest_decr = list(difference).index(greatest_decr) + 1
+
+    print("Total months: " + str(len(months)))
+    print(f"Total: ${sum_total}")    
+    print(f"Average Change:$ {average:.2f}")
+    print(f"Greatest Increase in Profits: {months[index_greatest_inc]} (${greatest_inc})")
+    print(f"Greatest Increase in Profits: {months[index_greatest_decr]} (${greatest_decr})")
+
 
     
 
