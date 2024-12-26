@@ -1,17 +1,14 @@
 import os
 import csv     
 import numpy as np
+
 months=[]
 sum_total=0
 budget_numbers = []
+
 ##PyBank\Resources\budget_data.csv
 bank_csv= os.path.join('PyBank\\Resources\\budget_data.csv')
 #print(bank_csv)
-
-#     ##The total number of months included in the dataset
-# def print_headers(bank_data):
-#      total_months = len(csvreader['Date'])
-#      print("Total months:" + total_months)
 
 print("Financial Analysis")
 
@@ -35,7 +32,7 @@ with open(bank_csv) as csvfile:
     
         sum_total += int(number)
 
-        
+
     difference = np.diff(budget_numbers)
     average= np.average(difference)
     greatest_inc=np.max(difference)
@@ -51,9 +48,20 @@ with open(bank_csv) as csvfile:
     print(f"Greatest Increase in Profits: {months[index_greatest_decr]} (${greatest_decr})")
 
 
-    
+    output_CSV = [["Financial Analysis"],
+                  ["--------------------------------"],
+                  ["Total months: " + str(len(months))],[f"Total: ${sum_total}"],
+                  [f"Average Change:$ {average:.2f}"],
+                  [f"Greatest Increase in Profits: {months[index_greatest_inc]} (${greatest_inc})"],
+                  [f"Greatest Increase in Profits: {months[index_greatest_decr]} (${greatest_decr})"]]
 
-     
+    output_file= os.path.join("PyBank\analysis")
+    
+    with open('PyBank\\analysis','w', newline='') as csvfile:
+
+        writer = csv.writer(csvfile)
+
+        writer.writerows(output_CSV)
     
      
           
