@@ -5,11 +5,10 @@ import numpy as np
 from collections import Counter
 
 total_votes=[]
-winner=[]
 candidates=[]
 candidate_votes={}
 
-
+#path\PyPoll\Resources\election_data.csv
 poll_csv=os.path.join("PyPoll\Resources\election_data.csv")
 
 print("Election Results")
@@ -17,21 +16,23 @@ print("-----------------------")
 
 column_index= 2
 unique_candidates=set()
-
+# Read in the CSV file
 with open(poll_csv) as csvfile:
+    # CSV reader specifies delimiter and variable that holds contents
     csvreader = csv.reader(csvfile, delimiter=',')
-    #print(csvreader)
+
 
     # Read the header row first (skip this step if there is no header)
     csv_header = next(csvreader)
-    #print(f"CSV Header: {csv_header}")
+   
 
 
-    # Read each row of data after the header
+    ## Loop through the data
     for row in csvreader:
         #total number votes cast
         total_votes.append(row[0])
 
+        #count each vote for each candidate 
         value= row[column_index]
         if value in candidate_votes:
             candidate_votes[value] +=1
@@ -41,34 +42,61 @@ with open(poll_csv) as csvfile:
         #list of candidates
         unique_candidates.add(row[column_index])
     
+    #unique values o names of the candidates
     unique_candidates_list= list(unique_candidates)
+    unique_candidates_list.sort()
 
-           #count each vote for each candidate
-    #counts_votes=[row[column_index] for row in unique_candidates_list]
-    #numbers_votes= Counter(counts_votes)
+    #total of votes cast
+    total_votes_sum= len(total_votes)
+
+    #from the dictionary access to the values 
+    candidate_list_values= list(candidate_votes.values())
     
-    #candidate0= str(unique_candidates_list[0].append(numbers_votes))
-    #candidate1=str(unique_candidates_list[1].append(numbers_votes)) 
-    #candidate2=str(unique_candidates_list[2].append(numbers_votes)) 
+    ##get the key and the value from a dictionary using the max funciton
+    winner=  max(candidate_votes.items(), key=lambda item: item[1])
 
+    
+    #percentages of the votes
+    candidate1= candidate_list_values[0]*100/total_votes_sum
+    candidate2=candidate_list_values[1]*100/total_votes_sum
+    candidate3=candidate_list_values[2]*100/total_votes_sum
+
+        
     ##print total votes cast
-    print("Total votes: "+ str(len(total_votes)))
+    print("Total votes: "+ str(total_votes_sum))
     print('-----------------------')
 
-    ###list of candidates str{candidate0}
+    ###list of candidates with percentages and number of votes
     
-    print(f"{unique_candidates_list[0]}:  ")
-    print(f"{unique_candidates_list[1]}:  ")
-    print(f"{unique_candidates_list[2]}:  ")     
+    print(f"{unique_candidates_list[0]}: {candidate1:.3f}% ({candidate_votes['Charles Casper Stockham']})")
+    print(f"{unique_candidates_list[1]}: {candidate2:.3f}% ({candidate_votes['Diana DeGette']})")
+    print(f"{unique_candidates_list[2]}: {candidate3:.3f}% ({candidate_votes['Raymon Anthony Doane']})")
 
-    #print votes of each candidate
-    print(candidate_votes)
+    print("------------------------")
+    print(f"Winner:{winner}")
+    print("------------------------")
 
-    # def list_candidates(candidates):
-    #         counts=Counter(row[2])
-    #         candidates.append(counts) 
 
-    #         for i in candidates:
-        
-    #          print(f"Row{i+1} count:{dict(candidates)}")
-      
+
+    ## writing the result using write csv
+    output_CSV_poll = [["Election Results"],
+                  ["--------------------------------"],
+                  ["Total votes: "+ str(total_votes_sum)],
+                  [f"{unique_candidates_list[0]}: {candidate1:.3f}% ({candidate_votes['Charles Casper Stockham']})"],
+                  [f"{unique_candidates_list[1]}: {candidate2:.3f}% ({candidate_votes['Diana DeGette']})"],
+                  [f"{unique_candidates_list[2]}: {candidate3:.3f}% ({candidate_votes['Raymon Anthony Doane']})"],
+                  ["--------------------------------"],
+                  [f"Winner:{winner}"],
+                  ["--------------------------------"]]
+
+    #path to the text file\analysis
+    output_file= os.path.join("PyPoll\analysis")
+
+    ## writing the result using write csv
+    with open('PyPoll\\analysis.txt','w', newline='') as csvfile:
+
+        writer = csv.writer(csvfile)
+
+        writer.writerows(output_CSV_poll)
+    
+
